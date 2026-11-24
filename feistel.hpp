@@ -17,15 +17,15 @@ namespace feistel {
 constexpr int ROUNDS = 16;
 
 struct Key128 {
-    uint32_t hi;   // first 4 bytes of the key
-    uint32_t lo;   // last 4 bytes of the key
+    uint64_t hi;   // first 8 bytes of the key
+    uint64_t lo;   // last 8 bytes of the key
 };
 
 using Subkeys = std::array<uint32_t, ROUNDS>;     // one 32-bit subkey per round
-using RoundStates = std::array<uint16_t, ROUNDS + 1>;  // state before round 1 .. after last round
+using RoundStates = std::array<uint64_t, ROUNDS + 1>;  // state before round 1 .. after last round
 
 // Derive one subkey per round from the 128-bit master key.
-Subkeys key_schedule(const Key64& key);
+Subkeys key_schedule(const Key128& key);
 
 // Round function: 32-bit half + 32-bit subkey -> 32 bits. Does NOT need to be invertible.
 uint32_t f(uint32_t half, uint32_t subkey);

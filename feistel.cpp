@@ -18,8 +18,14 @@ namespace feistel {
 //   - running the S-box over key material adds nonlinearity to the schedule
 // Placeholder below just cycles through the four 32-bit words of the key.
 // ---------------------------------------------------------------------------
-Subkeys key_schedule(const Key64& key) {
+Subkeys key_schedule(const Key128& key) {
     Subkeys K{};
+
+    // split the 128-bit key into four 32-bit words
+    const uint32_t w[4] = {
+        uint32_t(key.hi >> 32), uint32_t(key.hi),
+        uint32_t(key.lo >> 32), uint32_t(key.lo),
+    };
 
     for (int i = 0; i < ROUNDS; ++i) {
         K[i] = w[i % 4];   //: replace with your real schedule
@@ -59,6 +65,7 @@ uint64_t block(uint64_t in, const Subkeys& K, bool decrypt, RoundStates* states)
     if (states) (*states)[0] = (uint64_t(L) << 32) | R;
 
     for (int i = 0; i < ROUNDS; ++i) {
+        uint32_t k;
         if (decrypt) {
             k = K[ROUNDS - 1 - i];
         } else k = K[i];
