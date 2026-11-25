@@ -45,12 +45,10 @@ Subkeys key_schedule(const Key128& key) {
 uint32_t f(uint32_t half, uint32_t subkey) {
     uint32_t x = half ^ subkey;    // step 1: XOR with the subkey
     
-    // step 2: confusion  — TODO, e.g. x = sub_word(x);
-    
-    // step 3: diffusion  — TODO, e.g. combine x with rotated copies of itself
+    x = (std::rotl(x, 1) & std::rotl(x, 8))
+         ^ (std::rotl(x, 3) & std::rotl(x, 13))   // second AND term
+         ^ std::rotl(x, 2);
 
-                   // remove this line once you use sub_word
-    return x;
 }
 
 // ---------------------------------------------------------------------------
